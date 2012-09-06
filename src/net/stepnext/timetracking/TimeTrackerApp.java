@@ -82,8 +82,10 @@ public class TimeTrackerApp {
 			public void mouseUp(MouseEvent e) {
 				switch(e.button) {
 				case SWT.BUTTON3:
+					System.out.println("left click");
 					showProject1Selector();
 				case SWT.BUTTON1:
+					System.out.println("right click");
 					controller.toggle();
 				}
 				controller.getCurrentTask();
