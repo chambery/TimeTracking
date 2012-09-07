@@ -1,6 +1,9 @@
 package net.stepnext.timetracking;
 
 
+import java.util.Collection;
+
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -12,8 +15,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.FillLayout;
 
 public class TimeTrackerApp {
 	class DisplayUpdater implements Runnable {
@@ -22,7 +23,7 @@ public class TimeTrackerApp {
 		public void run() {
 			while(true) {
 				try {
-					Thread.sleep(30000);
+					Thread.sleep(2000);
 					TimeTrackerApp.this.update();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -45,7 +46,11 @@ public class TimeTrackerApp {
 				switch(e.button) {
 				case 1:
 					System.out.println("left click");
-					controller.toggle();
+					try {
+						controller.toggle();
+					} catch (NoTaskDefinedException e1) {
+						showProjectSelector();
+					}
 					break;
 				case 3:
 					System.out.println("right click");
@@ -122,10 +127,19 @@ public class TimeTrackerApp {
 		Label lblCurrentTask = new Label(shell, SWT.NONE);
 		lblCurrentTask.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblCurrentTask.setText("Current Task");
+		
+		Display.getDefault().asyncExec(this.new DisplayUpdater());
 
 	}
 
 	protected void showProjectSelector() {
+		Collection<String> tasks = controller.getTasks();
+		if(tasks.size() == 0) {
+			InputDialog newTaskDialog = new InputDialog(shell, "New Task", "Enter Task Name", null, null);
+			if(newTaskDialog.open() == InputDialog.OK) {
+				controller.setCurrentTask(newTaskDialog.getValue());
+			}
+		}
 		Shell selector = new Shell(this.shell, SWT.APPLICATION_MODAL); 
 		final Table table = new Table(selector, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible(true);
@@ -137,7 +151,7 @@ public class TimeTrackerApp {
 			}
 		});
 		(new TableItem(table, SWT.NONE)).setText("New Task...");
-		for (String task : controller.getTasks()) {
+		for (String task : tasks) {
 			(new TableItem(table, SWT.NONE)).setText(task);
 		}
 	}

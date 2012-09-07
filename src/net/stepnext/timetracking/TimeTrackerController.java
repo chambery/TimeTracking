@@ -13,14 +13,25 @@ public class TimeTrackerController {
 	
 	public void setCurrentTask(String name) {
 		this.currentTask = name;
+		if(tracker.getTasks().contains(name) == false) {
+			tracker.addTask(name);
+		}
 		stopWatch.reset();
+		stopWatch.start();
 	}
 
 	public long getTime() {
+		if(currentTask == null) {
+			return 0l;
+		}
 		return tracker.getTaskTime(currentTask);
 	}
 
-	public void toggle() {
+	public void toggle() throws NoTaskDefinedException {
+		if(currentTask == null) {
+			throw new NoTaskDefinedException();
+		}
+		
 		switch (stopWatch.getState()) {
 		case StopWatch.STATE_RUNNING:
 			stopWatch.suspend();			
