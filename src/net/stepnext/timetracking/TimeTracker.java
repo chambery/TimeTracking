@@ -1,5 +1,6 @@
 package net.stepnext.timetracking;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,4 +27,9 @@ public class TimeTracker {
 	public long getTaskTime(String name) {
 		return tasks.get(name);
 	}
+	
+	public Collection<String> getTasks() {
+		return tasks.keySet();
+	}
+	
 }

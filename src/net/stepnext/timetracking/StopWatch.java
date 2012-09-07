@@ -62,28 +62,28 @@ public class StopWatch {
     private static final long NANO_2_MILLIS = 1000000L;
 
     // running states
-    private static final int STATE_UNSTARTED = 0;
+    public static final int STATE_UNSTARTED = 0;
 
-    private static final int STATE_RUNNING = 1;
+    public static final int STATE_RUNNING = 1;
 
-    private static final int STATE_STOPPED = 2;
+    public static final int STATE_STOPPED = 2;
 
-    private static final int STATE_SUSPENDED = 3;
+    public static final int STATE_SUSPENDED = 3;
 
     // split state
-    private static final int STATE_UNSPLIT = 10;
+    public static final int STATE_UNSPLIT = 10;
 
-    private static final int STATE_SPLIT = 11;
+    public static final int STATE_SPLIT = 11;
 
     /**
      * The current running state of the StopWatch.
      */
-    private int runningState = STATE_UNSTARTED;
+    public int runningState = STATE_UNSTARTED;
 
     /**
      * Whether the stopwatch has a split time recorded.
      */
-    private int splitState = STATE_UNSPLIT;
+    public int splitState = STATE_UNSPLIT;
 
     /**
      * The start time.
