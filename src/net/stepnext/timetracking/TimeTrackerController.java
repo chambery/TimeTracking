@@ -21,14 +21,22 @@ public class TimeTrackerController {
 	}
 
 	public void toggle() {
-		if(stopWatch.isRunning()) {
-			stopWatch.suspend();
-		} else {
+		switch (stopWatch.getState()) {
+		case StopWatch.STATE_RUNNING:
+			stopWatch.suspend();			
+			break;
+			
+		case StopWatch.STATE_SUSPENDED:
+			stopWatch.resume();
+			break;
+
+		case StopWatch.STATE_STOPPED:
 			stopWatch.start();
+			break;
 		}
 	}
 	
-	public Collection<String> getAllTasks() {
+	public Collection<String> getTasks() {
 		return tracker.getTasks();
 	}
 }

@@ -12,6 +12,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.layout.FillLayout;
 
 public class TimeTrackerApp {
 	class DisplayUpdater implements Runnable {
@@ -43,10 +45,12 @@ public class TimeTrackerApp {
 				switch(e.button) {
 				case 1:
 					System.out.println("left click");
-					showProjectSelector();
+					controller.toggle();
+					break;
 				case 3:
 					System.out.println("right click");
-					controller.toggle();
+					showProjectSelector();
+					break;
 				}
 				controller.getCurrentTask();
 			}
@@ -55,6 +59,7 @@ public class TimeTrackerApp {
 	protected Shell shell;
 	protected TimeTrackerController controller = new TimeTrackerController();
 	private Label lblClock;
+	private Label filler;
 
 	/**
 	 * Launch the application.
@@ -98,17 +103,25 @@ public class TimeTrackerApp {
 		shell = new Shell();
 		shell.setSize(315, 96);
 		shell.setText("SWT Application");
-		shell.setLayout(new GridLayout(1, false));
+		shell.setLayout(new GridLayout(2, false));
 		
 		shell.addMouseListener(new MouseAdapter());
 		
 		lblClock = new Label(shell, SWT.NONE);
 		lblClock.setFont(SWTResourceManager.getFont("Lucida Grande", 44, SWT.BOLD));
-		lblClock.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true, 1, 1));
+		lblClock.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		lblClock.setEnabled(false);
 		lblClock.setAlignment(SWT.CENTER);
 		lblClock.setText("000 : 00");
 		lblClock.addMouseListener(new MouseAdapter());
+		
+		/* filler */
+		Label filler = new Label(shell, SWT.NONE);
+		filler.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
+		
+		Label lblCurrentTask = new Label(shell, SWT.NONE);
+		lblCurrentTask.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblCurrentTask.setText("Current Task");
 
 	}
 
@@ -124,7 +137,7 @@ public class TimeTrackerApp {
 			}
 		});
 		(new TableItem(table, SWT.NONE)).setText("New Task...");
-		for (String task : controller.getAllTasks()) {
+		for (String task : controller.getTasks()) {
 			(new TableItem(table, SWT.NONE)).setText(task);
 		}
 	}

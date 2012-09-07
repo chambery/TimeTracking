@@ -384,4 +384,8 @@ public class StopWatch {
     public boolean isRunning() {
     	return STATE_RUNNING == runningState;
     }
+
+	public int getState() {
+		return runningState;
+	}
 }
