@@ -7,6 +7,7 @@ import java.util.Map;
 public class TimeTracker {
 	private String recordState;
 	private Map<String, Long> tasks = new HashMap<String, Long>();
+	private String currentTask;
 	
 	public String getRecordState() {
 		return recordState;
@@ -28,8 +29,24 @@ public class TimeTracker {
 		return tasks.get(name);
 	}
 	
-	public Collection<String> getTasks() {
+	public Collection<String> getTaskNames() {
 		return tasks.keySet();
+	}
+	
+	public Map<String, Long> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(Map<String, Long> tasks) {
+		this.tasks = tasks;
+	}
+
+	public String getCurrentTask() {
+		return currentTask;
+	}
+
+	public void setCurrentTask(String currentTask) {
+		this.currentTask = currentTask;
 	}
 	
 }

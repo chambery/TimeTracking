@@ -29,5 +29,15 @@
   		<artifactId>swt-macosx</artifactId>
   		<version>3.0m7</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.2.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.10</version>
+  	</dependency>
   </dependencies>
 </project>

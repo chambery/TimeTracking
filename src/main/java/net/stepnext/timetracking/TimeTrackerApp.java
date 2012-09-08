@@ -23,7 +23,7 @@ public class TimeTrackerApp {
 		public void run() {
 			while(true) {
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(20000);
 					TimeTrackerApp.this.update();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -64,7 +64,6 @@ public class TimeTrackerApp {
 	protected Shell shell;
 	protected TimeTrackerController controller = new TimeTrackerController();
 	private Label lblClock;
-	private Label filler;
 
 	/**
 	 * Launch the application.
@@ -80,6 +79,7 @@ public class TimeTrackerApp {
 	}
 
 	public void update() {
+		System.out.println("updating");
 		long time = controller.getTime();
 		int hours = (int) (time / 60);
 		int minutes = (int) (time % 60);
@@ -94,6 +94,7 @@ public class TimeTrackerApp {
 		createContents();
 		shell.open();
 		shell.layout();
+
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -128,12 +129,12 @@ public class TimeTrackerApp {
 		lblCurrentTask.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblCurrentTask.setText("Current Task");
 		
-		Display.getDefault().asyncExec(this.new DisplayUpdater());
-
+		Display.getDefault().timerExec(10000, new DisplayUpdater());
+		
 	}
 
 	protected void showProjectSelector() {
-		Collection<String> tasks = controller.getTasks();
+		Collection<String> tasks = controller.getTaskNames();
 		if(tasks.size() == 0) {
 			InputDialog newTaskDialog = new InputDialog(shell, "New Task", "Enter Task Name", null, null);
 			if(newTaskDialog.open() == InputDialog.OK) {
