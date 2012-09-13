@@ -12,7 +12,7 @@ public class TimeTrackerTest {
 		assertNull(controller.getCurrentTask());
 		controller.setCurrentTask("foo");
 		assertNotNull(controller.getCurrentTask());
-		
+		controller.getTime();
 
 	}
 
