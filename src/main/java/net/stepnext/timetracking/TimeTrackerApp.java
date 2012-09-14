@@ -6,15 +6,15 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 public class TimeTrackerApp {
@@ -71,6 +71,7 @@ public class TimeTrackerApp {
 	private Label lblClock;
 	Display display;
 	private Label lblCurrentTask;
+	private Menu menu;
 	
 	/**
 	 * Launch the application.
@@ -108,26 +109,21 @@ public class TimeTrackerApp {
 	protected void createContents() {
 		shell = new Shell();
 		shell.setSize(315, 97);
-		shell.setText("SWT Application");
+		shell.setText("Time Tracker");
 		shell.setLayout(new GridLayout(2, false));
-
-		shell.addMouseListener(new MouseAdapter());
 
 		lblClock = new Label(shell, SWT.NONE);
 		lblClock.setFont(SWTResourceManager.getFont("Lucida Grande", 44, SWT.BOLD));
-		lblClock.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		lblClock.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		lblClock.setEnabled(false);
 		lblClock.setAlignment(SWT.CENTER);
 		lblClock.setText("000 : 00");
-//		lblClock.addMouseListener(new MouseAdapter());
+		new Label(shell, SWT.NONE);
 
-		/* filler */
-		Label filler = new Label(shell, SWT.NONE);
-		filler.setFont(SWTResourceManager.getFont("Lucida Grande", 8, SWT.NORMAL));
-		filler.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
-
-		lblCurrentTask = new Label(shell, SWT.NONE);
+		lblCurrentTask = new Label(shell, SWT.RIGHT);
+		lblCurrentTask.setFont(SWTResourceManager.getFont("Lucida Grande", 10, SWT.NORMAL));
 		lblCurrentTask.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		menu = new Menu (shell, SWT.POP_UP);
 		shell.pack();
 		update();
 	}
@@ -135,26 +131,35 @@ public class TimeTrackerApp {
 	protected void showProjectSelector() {
 		Collection<String> tasks = controller.getTaskNames();
 		if (tasks.size() == 0) {
-			InputDialog newTaskDialog = new InputDialog(shell, "New Task", "Enter Task Name", null, null);
-			if (newTaskDialog.open() == InputDialog.OK) {
-				controller.setCurrentTask(newTaskDialog.getValue());
-			}
+			showNewTaskDialog();
 		}
-		Shell selector = new Shell(this.shell, SWT.APPLICATION_MODAL);
-		final Table table = new Table(selector, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLinesVisible(true);
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				String task = table.getItem(new Point(e.x, e.y)).getText();
-				controller.setCurrentTask(task);
-			}
+
+		MenuItem addNew = new MenuItem(menu, SWT.NONE);
+		addNew.setText("New Task...");
+		addNew.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				showNewTaskDialog();
+			}			
 		});
-		(new TableItem(table, SWT.NONE)).setText("New Task...");
-		for (String task : tasks) {
-			(new TableItem(table, SWT.NONE)).setText(task);
+		for (final String name : tasks) {
+			MenuItem item = new MenuItem (menu, SWT.PUSH);
+			item.setText(name);
+			item.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					controller.setCurrentTask(name);
+					update();
+				}
+			});
 		}
-		shell.open();
+		shell.setMenu(menu);
+	}
+
+	private void showNewTaskDialog() {
+		InputDialog newTaskDialog = new InputDialog(shell, "New Task", "Enter Task Name", null, null);
+		if (newTaskDialog.open() == InputDialog.OK) {
+			controller.setCurrentTask(newTaskDialog.getValue());
+		}
+		update();
 	}
 
 	public void update() {
@@ -173,6 +178,7 @@ public class TimeTrackerApp {
 			System.out.println("started");
 		}
 		
-		lblCurrentTask.setText(controller.getCurrentTask());
+		lblCurrentTask.setText(controller.getCurrentTask() == null ? "" : controller.getCurrentTask());
+		shell.layout();
 	}
 }

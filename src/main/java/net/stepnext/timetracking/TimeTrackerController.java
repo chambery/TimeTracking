@@ -9,14 +9,18 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class TimeTrackerController {
 	TimeTracker tracker = new TimeTracker();
 	StopWatch stopWatch = new StopWatch();
 	Collection<ClockUpdateListener> listeners = new ArrayList<ClockUpdateListener>();
-	
+	Gson gson; 
+
 	public TimeTrackerController() {
+		gson = new GsonBuilder().setPrettyPrinting().create();
 		load();
+		
 	}
 
 	public String getCurrentTask() {
@@ -28,6 +32,7 @@ public class TimeTrackerController {
 		if (tracker.getTaskNames().contains(name) == false) {
 			tracker.addTask(name);
 		}
+		save();
 		stopWatch.start();
 	}
 
@@ -73,7 +78,7 @@ public class TimeTrackerController {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter("tasks.json");
-			writer.write(new Gson().toJson(tracker));
+			writer.write(gson.toJson(tracker));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -86,7 +91,7 @@ public class TimeTrackerController {
 		FileReader reader = null;
 		try {
 			reader = new FileReader("tasks.json");
-			tracker = new Gson().fromJson(reader, TimeTracker.class);
+			tracker = gson.fromJson(reader, TimeTracker.class);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
